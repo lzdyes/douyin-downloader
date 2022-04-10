@@ -1,0 +1,30 @@
+{
+  "editor.tabSize": 2,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "[javascript]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescript]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[stylus]": { "editor.formatOnSave": true, "editor.defaultFormatter": "thisismanta.stylus-supremacy" },
+  "[jade]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[html]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[vue]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[rust]": { "editor.formatOnSave": true, "editor.defaultFormatter": "rust-lang.rust" },
+
+  "stylusSupremacy.insertColons": false,
+  "stylusSupremacy.insertBraces": false,
+  "stylusSupremacy.insertSemicolons": false,
+  "stylusSupremacy.insertNewLineAroundImports": true,
+  "stylusSupremacy.insertNewLineAroundBlocks": true,
+  "stylusSupremacy.insertNewLineAroundProperties": true,
+  "stylusSupremacy.insertNewLineAroundOthers": true,
+  "stylusSupremacy.sortProperties": "grouped",
+
+  "languageStylus.useSeparator": false,
+
+  "files.insertFinalNewline": true,
+  "files.exclude": {
+    ".gitignore": true,
+    ".vscode": true,
+    "yarn.lock": true
+  }
+}
