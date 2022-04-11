@@ -3,6 +3,8 @@
   windows_subsystem = "windows"
 )]
 
+mod menu;
+
 use futures_util::StreamExt;
 use reqwest::header::USER_AGENT;
 use std::fs::File;
@@ -57,6 +59,7 @@ async fn download(url: String, path: String) -> Result<(), String> {
 
 fn main() {
   tauri::Builder::default()
+    .menu(menu::generate_menu())
     .invoke_handler(tauri::generate_handler![show, download])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
