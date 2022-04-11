@@ -14,6 +14,10 @@ A cross-platform download douyin video tool built with <a href="https://github.c
 
 </div>
 
+## Screenshots
+
+![Windows](docs/screenshots/windows.png)
+
 ## Install
 
 Download from [release](https://github.com/lzdyes/douyin-downloader/releases). Supports Windows x64, Linux x86_64 and macOS 11+
