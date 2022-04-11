@@ -1,7 +1,7 @@
 {
   "name": "douyin-downloader",
   "description": "A cross-platform download douyin video tool built with tauri",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "lzdyes <lzdyes@gmail.com>",
   "private": true,
   "repository": {
