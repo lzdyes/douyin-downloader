@@ -37,7 +37,8 @@
         "exceptionDomain": "",
         "signingIdentity": null,
         "providerShortName": null,
-        "entitlements": null
+        "entitlements": null,
+        "minimumSystemVersion": "10.13"
       },
       "windows": {
         "certificateThumbprint": null,
