@@ -2,12 +2,14 @@
 <style scoped lang="stylus" src="./index.styl"></style>
 <script setup lang="ts">
 import { invoke, http, dialog } from '@tauri-apps/api'
-import { ElButton, ElForm, ElFormItem, ElInput, ElProgress, ElDivider, ElMessage } from 'element-plus'
+import { ElButton, ElForm, ElFormItem, ElInput, ElProgress, ElDivider, ElMessage, ElRadioGroup, ElRadio, ElRadioButton } from 'element-plus'
 import { computed, ref } from 'vue'
 
 const form = ref({
   homeURL: '',
   savePath: '',
+  ratio: '1080p',
+  watermark: 0,
 })
 
 const isDownloading = ref(false)
@@ -70,7 +72,7 @@ const requsetList = (sec_uid: string, max_cursor: string) => {
           const { vid } = v.video
 
           if (vid) {
-            const url = `https://aweme.snssdk.com/aweme/v1/play/?video_id=${vid}&ratio=1080p`
+            const url = `https://aweme.snssdk.com/aweme/v1/play/?video_id=${vid}&ratio=${form.value.ratio}&watermark=${form.value.watermark}`
             const path = `${form.value.savePath}/${name}.mp4`
             invoke('download', { url, path })
               .then(() => {
