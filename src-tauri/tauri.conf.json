@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "douyin-downloader",
-    "version": "0.0.4"
+    "version": "0.0.5"
   },
   "build": {
     "distDir": "../dist",
@@ -33,12 +33,12 @@
       },
       "macOS": {
         "frameworks": [],
+        "minimumSystemVersion": "",
         "useBootstrapper": false,
         "exceptionDomain": "",
         "signingIdentity": null,
         "providerShortName": null,
-        "entitlements": null,
-        "minimumSystemVersion": "10.13"
+        "entitlements": null
       },
       "windows": {
         "certificateThumbprint": null,
@@ -50,13 +50,13 @@
       "active": false
     },
     "allowlist": {
-      "all": true,
-      "fs": {
-        "all": true,
-        "scope": ["$HOME/**"]
+      "all": false,
+      "dialog": {
+        "all": false,
+        "open": true
       },
       "http": {
-        "all": true,
+        "all": false,
         "request": true,
         "scope": ["https://www.iesdouyin.com/*"]
       }
