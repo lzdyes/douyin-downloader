@@ -1,5 +1,5 @@
 .main
-  el-form(:model='form' label-width='80px')
+  el-form(:model='form' label-width='90px')
     el-form-item(label='主页地址')
       el-input(v-model='form.homeURL' placeholder='例如：https://www.douyin.com/user/MS4wLjABAAAAzzmS2TgIEvxGftMpWD13Ty8k5HmsjlGsLJ1yBUEm2Ew')
     el-form-item.row(label='视频质量')
@@ -11,6 +11,13 @@
       el-radio-group(v-model='form.watermark')
         el-radio(:label='0' border) 去除水印
         el-radio(:label='1' border) 保留水印
+    el-form-item.row(label='文件重命名')
+      el-radio-group(v-model='form.nameType')
+        el-radio(:label='0' border) 标题 + 标签
+        el-radio(:label='1' border) 标题
+        el-radio(:label='2' border) 视频 ID
+        el-radio(:label='3' border) 序号
+        //- el-radio(:label='4' border) MD5
     el-form-item.row(label='保存位置')
       el-input(v-model='form.savePath')
       el-button(type='primary' @click='onSaveClick' :disabled='isDownloading') 浏 览
@@ -24,5 +31,5 @@
       el-divider(direction='vertical')
       span 成功：{{ successCount }}
       el-divider(direction='vertical')
-      span 失败：{{ failCount }}
+      span 失败：{{ failureCount }}
     el-progress(:percentage='percent')

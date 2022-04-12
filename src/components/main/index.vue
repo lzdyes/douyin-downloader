@@ -1,6 +1,7 @@
 <template lang="pug" src="./index.pug"></template>
 <style scoped lang="stylus" src="./index.styl"></style>
 <script setup lang="ts">
+import { NameType } from '@/enums'
 import { invoke, http, dialog } from '@tauri-apps/api'
 import { ElButton, ElForm, ElFormItem, ElInput, ElProgress, ElDivider, ElMessage, ElRadioGroup, ElRadio, ElRadioButton } from 'element-plus'
 import { computed, ref } from 'vue'
@@ -10,14 +11,15 @@ const form = ref({
   savePath: '',
   ratio: '1080p',
   watermark: 0,
+  nameType: NameType.TitleTag,
 })
 
 const isDownloading = ref(false)
 
 const total = ref(0)
 const successCount = ref(0)
-const failCount = ref(0)
-const percent = computed(() => Math.floor(((successCount.value + failCount.value) / total.value) * 100) || 0)
+const failureCount = ref(0)
+const percent = computed(() => Math.floor(((successCount.value + failureCount.value) / total.value) * 100) || 0)
 
 let isListCompleted = false
 
@@ -29,7 +31,7 @@ const onSaveClick = async () => {
 const onSubmit = async () => {
   total.value = 0
   successCount.value = 0
-  failCount.value = 0
+  failureCount.value = 0
 
   if (!form.value.homeURL) return ElMessage.error('请输入用户主页地址')
   if (!form.value.savePath) return ElMessage.error('请选择保存位置')
@@ -67,36 +69,45 @@ const requsetList = (sec_uid: string, max_cursor: string) => {
 
         requsetList(sec_uid, data.max_cursor.toString())
 
-        data.aweme_list.forEach(async (v: any) => {
-          const name = v.desc
-          const { vid } = v.video
+        data.aweme_list.forEach(async (v: any, i: number) => {
+          const { desc, video } = v
 
-          if (vid) {
-            const url = `https://aweme.snssdk.com/aweme/v1/play/?video_id=${vid}&ratio=${form.value.ratio}&watermark=${form.value.watermark}`
+          let name = ''
+          switch (form.value.nameType) {
+            case NameType.TitleTag:
+              name = desc
+              break
+            case NameType.Title:
+              const index = desc.indexOf('#')
+              if (index === -1) name = desc.trim()
+              else name = desc.substring(0, index).trim()
+              break
+            case NameType.VID:
+              name = video.vid
+              break
+            case NameType.Index:
+              name = (total.value - data.aweme_list.length + i + 1).toString()
+              break
+          }
+
+          console.log('name =', name)
+
+          if (video.vid) {
+            const url = `https://aweme.snssdk.com/aweme/v1/play/?video_id=${video.vid}&ratio=${form.value.ratio}&watermark=${form.value.watermark}`
             const path = `${form.value.savePath}/${name}.mp4`
             invoke('download', { url, path })
-              .then(() => {
-                successCount.value++
-              })
-              .catch((err) => {
-                console.error(err)
-                failCount.value++
-              })
-              .finally(() => {
-                console.log('percent.value =', percent.value)
-
-                if (isListCompleted && percent.value === 100) isDownloading.value = false
-              })
+              .then(() => successCount.value++)
+              .catch(() => failureCount.value++)
+              .finally(() => isListCompleted && percent.value === 100 && (isDownloading.value = false))
           } else {
             console.error('vid is null', v)
-            failCount.value++
+            failureCount.value++
           }
         })
       } else {
         console.log('over')
         isListCompleted = true
-
-        if (percent.value === 100) isDownloading.value = false
+        percent.value === 100 && (isDownloading.value = false)
       }
     })
     .catch((error) => console.error(error))
