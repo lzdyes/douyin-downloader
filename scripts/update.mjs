@@ -49,11 +49,11 @@ for (const { name, browser_download_url } of release.assets) {
   }
 }
 
-const { data: updater } = await github.rest.repos.getReleaseByTag({ ...options, tag: UPDATE_TAG_NAME })
+const { data: updater } = await octokit.rest.repos.getReleaseByTag({ ...options, tag: UPDATE_TAG_NAME })
 
 for (const { id, name } of updater.assets) {
   if (name === UPDATE_FILE_NAME) {
-    await github.rest.repos.deleteReleaseAsset({ ...options, asset_id: id })
+    await octokit.rest.repos.deleteReleaseAsset({ ...options, asset_id: id })
     break
   }
 }
