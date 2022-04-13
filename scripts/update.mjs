@@ -25,7 +25,7 @@ const octokit = getOctokit(process.env.GITHUB_TOKEN)
 const options = { owner: context.repo.owner, repo: context.repo.repo }
 
 const { data: release } = await octokit.rest.repos.getLatestRelease(options)
-updateData.name = release.tag.name
+updateData.name = release.tag_name
 for (const { name, browser_download_url } of release.assets) {
   if (name.endsWith('.msi.zip')) {
     updateData.platforms.win64.url = browser_download_url
