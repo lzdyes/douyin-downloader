@@ -11,9 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         platform: [macos-latest, ubuntu-latest, windows-latest]
-
     runs-on: ${{ matrix.platform }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -44,4 +42,21 @@ jobs:
         with:
           tagName: v__VERSION__
           releaseName: v__VERSION__
-          releaseDraft: true
+  update:
+    needs: release
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - run: yarn
+
+      - name: Create Update
+        run: yarn update
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
