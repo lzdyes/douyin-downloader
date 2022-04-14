@@ -2,7 +2,9 @@
 <style scoped lang="stylus" src="./index.styl"></style>
 <script setup lang="ts">
 import { NameType } from '@/enums'
+import { generateVideoURL } from '@/utils'
 import { invoke, http, dialog } from '@tauri-apps/api'
+import { basename } from '@tauri-apps/api/path'
 import { ElButton, ElForm, ElFormItem, ElInput, ElProgress, ElDivider, ElMessage, ElRadioGroup, ElRadio, ElRadioButton } from 'element-plus'
 import { computed, ref } from 'vue'
 
@@ -33,6 +35,7 @@ const onSubmit = async () => {
   total.value = 0
   successCount.value = 0
   failureCount.value = 0
+  isListCompleted = false
 
   if (!form.value.homeURL) return ElMessage.error('请输入用户主页地址')
   if (!form.value.savePath) return ElMessage.error('请选择保存位置')
@@ -72,6 +75,13 @@ const requsetList = (sec_uid: string, max_cursor: string) => {
 
         data.aweme_list.forEach(async (v: any, i: number) => {
           const { desc, video } = v
+          const { vid } = video
+          const isAudio = !vid
+
+          /** skip audio */
+          if (isAudio && !form.value.audio) return
+
+          const url = isAudio ? video.play_addr.url_list[0] : generateVideoURL(vid, form.value.ratio, form.value.watermark)
 
           let name = ''
           switch (form.value.nameType) {
@@ -83,25 +93,20 @@ const requsetList = (sec_uid: string, max_cursor: string) => {
               if (index === -1) name = desc.trim()
               else name = desc.substring(0, index).trim()
               break
-            case NameType.VID:
-              name = video.vid
+            case NameType.ID:
+              name = isAudio ? await basename(url, '.mp3') : vid
               break
             case NameType.Index:
               name = (total.value - data.aweme_list.length + i + 1).toString()
               break
           }
 
-          if (video.vid) {
-            const url = `https://aweme.snssdk.com/aweme/v1/play/?video_id=${video.vid}&ratio=${form.value.ratio}&watermark=${form.value.watermark}`
-            const path = `${form.value.savePath}/${name}.mp4`
-            invoke('download', { url, path })
-              .then(() => successCount.value++)
-              .catch(() => failureCount.value++)
-              .finally(() => isListCompleted && percent.value === 100 && (isDownloading.value = false))
-          } else {
-            console.error('vid is null', v)
-            failureCount.value++
-          }
+          const ext = isAudio ? '.mp3' : '.mp4'
+          const path = `${form.value.savePath}/${name}${ext}`
+          invoke('download', { url, path })
+            .then(() => successCount.value++)
+            .catch(() => failureCount.value++)
+            .finally(() => isListCompleted && percent.value === 100 && (isDownloading.value = false))
         })
       } else {
         console.log('over')

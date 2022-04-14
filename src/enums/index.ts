@@ -3,8 +3,8 @@ export enum NameType {
   TitleTag,
   /** 标题 */
   Title,
-  /** 视频 ID */
-  VID,
+  /** 视频/音频 ID */
+  ID,
   /** 序号 */
   Index,
   /** MD5 */
