@@ -12,6 +12,7 @@ const form = ref({
   ratio: '1080p',
   watermark: 0,
   nameType: NameType.TitleTag,
+  audio: false,
 })
 
 const isDownloading = ref(false)
@@ -89,8 +90,6 @@ const requsetList = (sec_uid: string, max_cursor: string) => {
               name = (total.value - data.aweme_list.length + i + 1).toString()
               break
           }
-
-          console.log('name =', name)
 
           if (video.vid) {
             const url = `https://aweme.snssdk.com/aweme/v1/play/?video_id=${video.vid}&ratio=${form.value.ratio}&watermark=${form.value.watermark}`
