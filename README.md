@@ -1,9 +1,8 @@
-<div align="center">
-  <img height=128 src="src-tauri/icons/128x128.png" />
-</div>
-
 <h1 align="center">
-  <div>Douyin Downloader</div>
+  <img src="src-tauri/icons/128x128.png" width="128" />
+  <br>
+  Douyin Downloader
+  <br>
 </h1>
 
 <h3 align="center">
