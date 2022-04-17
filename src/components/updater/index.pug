@@ -1,0 +1,6 @@
+el-dialog(v-model='isDialogVisible' title='提示' custom-class='updater-dialog' :modal='false' :close-on-click-modal='false')
+  span 发现新版本 v{{ version }}，是否立即更新？
+  template(#footer)
+    span.dialog-footer
+      el-button(@click='isDialogVisible = false') 取 消
+      el-button(type='primary' @click='onUpdateClick') 更 新
