@@ -21,6 +21,7 @@ A cross-platform download douyin video tool built with <a href="https://github.c
 
 ![](docs/screenshots/windows_1.png)
 ![](docs/screenshots/windows_2.png)
+![](docs/screenshots/windows_3.png)
 
 ## Install
 

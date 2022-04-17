@@ -2,23 +2,17 @@
 <style lang="stylus" src="./index.styl"></style>
 <script setup lang="ts">
 import { relaunch } from '@tauri-apps/api/process'
-import { checkUpdate, installUpdate } from '@tauri-apps/api/updater'
+import { installUpdate } from '@tauri-apps/api/updater'
 import { onMounted, ref } from 'vue'
 import { ElButton, ElDialog } from 'element-plus'
+import { checkUpdate } from '@/utils'
+import store from '@/store'
 
-const isDialogVisible = ref(false)
-const version = ref('')
+onMounted(() => checkUpdate())
 
-onMounted(() => {
-  checkUpdate()
-    .then(({ shouldUpdate, manifest }) => {
-      if (shouldUpdate) {
-        version.value = manifest!.version
-        isDialogVisible.value = true
-      }
-    })
-    .catch((error) => console.error(error))
-})
+const onCancelClick = () => {
+  store.setUpdater({ active: false })
+}
 
 const onUpdateClick = async () => {
   await installUpdate()

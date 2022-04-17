@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "douyin-downloader",
-    "version": "0.1.3"
+    "version": "0.1.4"
   },
   "build": {
     "distDir": "../dist",
@@ -55,10 +55,14 @@
       "http": {
         "all": false,
         "request": true,
-        "scope": ["https://www.iesdouyin.com/*"]
+        "scope": ["https://www.iesdouyin.com/*", "https://www.douyin.com/*"]
       },
       "path": {
         "all": true
+      },
+      "shell": {
+        "all": false,
+        "open": true
       }
     },
     "windows": [

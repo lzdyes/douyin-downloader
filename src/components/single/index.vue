@@ -3,13 +3,13 @@
 <script setup lang="ts">
 import { NameType } from '@/enums'
 import { generateVideoURL } from '@/utils'
-import { invoke, http, dialog } from '@tauri-apps/api'
+import { dialog, http, invoke } from '@tauri-apps/api'
 import { basename } from '@tauri-apps/api/path'
-import { ElButton, ElForm, ElFormItem, ElInput, ElProgress, ElDivider, ElMessage, ElRadioGroup, ElRadio, ElRadioButton } from 'element-plus'
-import { computed, ref } from 'vue'
+import { ElButton, ElForm, ElFormItem, ElInput, ElMessage, ElRadioGroup, ElRadio, ElRadioButton } from 'element-plus'
+import { ref } from 'vue'
 
 const form = ref({
-  homeURL: '',
+  url: '',
   savePath: '',
   ratio: '1080p',
   watermark: 0,
@@ -18,13 +18,7 @@ const form = ref({
 })
 
 const isDownloading = ref(false)
-
-const total = ref(0)
-const successCount = ref(0)
-const failureCount = ref(0)
-const percent = computed(() => Math.floor(((successCount.value + failureCount.value) / total.value) * 100) || 0)
-
-let isListCompleted = false
+const status = ref('')
 
 const onSaveClick = async () => {
   const path = (await dialog.open({ directory: true })) as string
@@ -32,86 +26,66 @@ const onSaveClick = async () => {
 }
 
 const onSubmit = async () => {
-  total.value = 0
-  successCount.value = 0
-  failureCount.value = 0
-  isListCompleted = false
+  status.value = ''
 
-  if (!form.value.homeURL) return ElMessage.error('请输入用户主页地址')
+  if (!form.value.url) return ElMessage.error('请输入视频地址')
   if (!form.value.savePath) return ElMessage.error('请选择保存位置')
 
-  const sec_uid = form.value.homeURL.split('/').pop()
-  const max_cursor = '0'
+  const { searchParams } = new URL(form.value.url)
+  const item_ids = searchParams.get('modal_id')
 
-  if (sec_uid) {
+  if (item_ids) {
     isDownloading.value = true
-    requsetList(sec_uid, max_cursor)
-  } else ElMessage.error('请输入正确的用户主页地址')
+    status.value = '下载中'
+    requestVideo(item_ids)
+  } else ElMessage.error('请输入正确的视频地址')
 }
 
 const onCancelClick = () => {
   isDownloading.value = false
 }
 
-const requsetList = (sec_uid: string, max_cursor: string) => {
-  const listURL = 'https://www.iesdouyin.com/web/api/v2/aweme/post'
+const requestVideo = (item_ids: string) => {
+  const url = 'https://www.douyin.com/web/api/v2/aweme/iteminfo'
 
   http
-    .fetch(listURL, {
-      method: 'GET',
-      query: { sec_uid, max_cursor, count: '100' },
-    })
-    .then((response) => {
+    .fetch(url, { method: 'GET', query: { item_ids } })
+    .then(async (response) => {
       console.log(response)
-
-      if (!isDownloading.value) return
 
       const data = response.data as any
 
-      if (data.has_more) {
-        total.value += data.aweme_list.length
+      if (data.status_code === 0) {
+        const { desc, video } = data.item_list[0]
+        const { vid } = video
+        const isAudio = !vid
 
-        requsetList(sec_uid, data.max_cursor.toString())
+        /** skip audio */
+        if (isAudio && !form.value.audio) return
 
-        data.aweme_list.forEach(async (v: any, i: number) => {
-          const { desc, video } = v
-          const { vid } = video
-          const isAudio = !vid
+        const url = isAudio ? video.play_addr.url_list[0] : generateVideoURL(vid, form.value.ratio, form.value.watermark)
 
-          /** skip audio */
-          if (isAudio && !form.value.audio) return
+        let name = ''
+        switch (form.value.nameType) {
+          case NameType.TitleTag:
+            name = desc
+            break
+          case NameType.Title:
+            const index = desc.indexOf('#')
+            if (index === -1) name = desc.trim()
+            else name = desc.substring(0, index).trim()
+            break
+          case NameType.ID:
+            name = isAudio ? await basename(url, '.mp3') : vid
+            break
+        }
 
-          const url = isAudio ? video.play_addr.url_list[0] : generateVideoURL(vid, form.value.ratio, form.value.watermark)
-
-          let name = ''
-          switch (form.value.nameType) {
-            case NameType.TitleTag:
-              name = desc
-              break
-            case NameType.Title:
-              const index = desc.indexOf('#')
-              if (index === -1) name = desc.trim()
-              else name = desc.substring(0, index).trim()
-              break
-            case NameType.ID:
-              name = isAudio ? await basename(url, '.mp3') : vid
-              break
-            case NameType.Index:
-              name = (total.value - data.aweme_list.length + i + 1).toString()
-              break
-          }
-
-          const ext = isAudio ? '.mp3' : '.mp4'
-          const path = `${form.value.savePath}/${name}${ext}`
-          invoke('download', { url, path })
-            .then(() => successCount.value++)
-            .catch(() => failureCount.value++)
-            .finally(() => isListCompleted && percent.value === 100 && (isDownloading.value = false))
-        })
-      } else {
-        console.log('over')
-        isListCompleted = true
-        percent.value === 100 && (isDownloading.value = false)
+        const ext = isAudio ? '.mp3' : '.mp4'
+        const path = `${form.value.savePath}/${name}${ext}`
+        invoke('download', { url, path })
+          .then(() => (status.value = '下载成功'))
+          .catch(() => (status.value = '下载失败'))
+          .finally(() => (isDownloading.value = false))
       }
     })
     .catch((error) => console.error(error))

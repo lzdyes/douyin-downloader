@@ -1,19 +1,31 @@
 .menu
+  display flex
+  flex-direction column
+  padding 4px 0
   width 100px
   border-right 1px solid #eee
-  text-align center
+  user-select none
+
+  .top
+    flex 1
 
   .item
     margin 4px auto
     padding 10px 0
     width 80px
+    color #555
+    text-align center
     cursor pointer
 
-    &:hover, &.active
+    &:hover
       border-radius 8px
       background #edfafe
 
+    &.active
+      border-radius 8px
+      background #edfafe
+      color #409eff
+
     .name
       margin-top 8px
-      color #555
       font-size 14px
