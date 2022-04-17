@@ -12,8 +12,10 @@ const version = ref('')
 onMounted(() => {
   checkUpdate()
     .then(({ shouldUpdate, manifest }) => {
-      version.value = manifest!.version
-      isDialogVisible.value = shouldUpdate
+      if (shouldUpdate) {
+        version.value = manifest!.version
+        isDialogVisible.value = true
+      }
     })
     .catch((error) => console.error(error))
 })

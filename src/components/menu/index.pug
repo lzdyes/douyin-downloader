@@ -1,0 +1,4 @@
+.menu
+  .item(v-for='item, i of menus' :class='{ active: store.state.activeMenu === i }' @click='onMenuClick(i)')
+    img(:src='item.icon')
+    .name {{ item.name }}
