@@ -7,15 +7,10 @@ interface Updater {
 
 class Store {
   state = reactive({
-    activeMenu: 0,
     updater: {
       active: false,
     },
   })
-
-  setActiveMenu(index: number) {
-    this.state.activeMenu = index
-  }
 
   setUpdater(updater: Updater) {
     this.state.updater = updater

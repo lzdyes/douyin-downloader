@@ -1,7 +1,7 @@
 {
   "name": "douyin-downloader",
   "description": "A cross-platform download douyin video tool built with tauri",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": "lzdyes <lzdyes@gmail.com>",
   "private": true,
   "repository": {
@@ -19,7 +19,8 @@
     "@tauri-apps/api": "^1.0.0-rc.3",
     "element-plus": "^2.1.9",
     "reset-css": "^5.0.1",
-    "vue": "^3.2.33"
+    "vue": "^3.2.33",
+    "vue-router": "^4.0.14"
   },
   "devDependencies": {
     "@actions/github": "^5.0.1",

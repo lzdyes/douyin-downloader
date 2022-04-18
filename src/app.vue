@@ -1,6 +1,8 @@
 <template lang="pug">
 Menu
-component(:is='components[store.state.activeMenu]')
+router-view(v-slot='{ Component }')
+  keep-alive
+    component(:is='Component')
 Updater
 </template>
 
@@ -14,16 +16,10 @@ html, body
 </style>
 
 <script setup lang="ts">
-import store from '@/store'
 import { invoke } from '@tauri-apps/api/tauri'
 import { onMounted } from 'vue'
-import About from './components/about/index.vue'
 import Menu from './components/menu/index.vue'
-import Multiple from './components/multiple/index.vue'
-import Single from './components/single/index.vue'
 import Updater from './components/updater/index.vue'
-
-const components = [Multiple, Single, About]
 
 onMounted(() => invoke('show'))
 </script>
