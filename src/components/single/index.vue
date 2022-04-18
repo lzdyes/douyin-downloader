@@ -1,7 +1,7 @@
 <template lang="pug" src="./index.pug"></template>
 <style scoped lang="stylus" src="./index.styl"></style>
 <script setup lang="ts">
-import { NameType } from '@/enums'
+import { FileNameType } from '@/enums'
 import { generateVideoURL } from '@/utils'
 import { dialog, http, invoke } from '@tauri-apps/api'
 import { basename } from '@tauri-apps/api/path'
@@ -13,7 +13,7 @@ const form = ref({
   savePath: '',
   ratio: '1080p',
   watermark: 0,
-  nameType: NameType.TitleTag,
+  nameType: FileNameType.TitleTag,
   audio: false,
 })
 
@@ -67,15 +67,15 @@ const requestVideo = (item_ids: string) => {
 
         let name = ''
         switch (form.value.nameType) {
-          case NameType.TitleTag:
+          case FileNameType.TitleTag:
             name = desc
             break
-          case NameType.Title:
+          case FileNameType.Title:
             const index = desc.indexOf('#')
             if (index === -1) name = desc.trim()
             else name = desc.substring(0, index).trim()
             break
-          case NameType.ID:
+          case FileNameType.ID:
             name = isAudio ? await basename(url, '.mp3') : vid
             break
         }

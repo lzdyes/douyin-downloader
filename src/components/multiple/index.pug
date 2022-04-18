@@ -15,8 +15,13 @@
       el-radio-group(v-model='form.audio')
         el-radio(:label='false' border) 跳过
         el-radio(:label='true' border) 下载
-    el-form-item.row(label='文件重命名')
-      el-radio-group(v-model='form.nameType')
+    el-form-item.row(label='文件夹命名')
+      el-radio-group(v-model='form.folderNameType')
+        el-radio(:label='0' border) 作者昵称
+        el-radio(:label='1' border) 作者 ID
+        el-radio(:label='2' border) 抖音号
+    el-form-item.row(label='文件命名')
+      el-radio-group(v-model='form.fileNameType')
         el-radio(:label='0' border) 标题 + 标签
         el-radio(:label='1' border) 标题
         el-radio(:label='2' border) 视频/音频 ID
