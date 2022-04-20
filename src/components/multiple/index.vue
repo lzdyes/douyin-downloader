@@ -1,8 +1,9 @@
 <template lang="pug" src="./index.pug"></template>
 <style scoped lang="stylus" src="./index.styl"></style>
 <script setup lang="ts">
+import { getUser } from '@/api'
 import { FileNameType, FolderNameType } from '@/enums'
-import { generateVideoURL } from '@/utils'
+import { exists, generateVideoURL } from '@/utils'
 import { invoke, http, dialog, fs } from '@tauri-apps/api'
 import { basename, resolve } from '@tauri-apps/api/path'
 import { ElButton, ElForm, ElFormItem, ElInput, ElProgress, ElDivider, ElMessage, ElRadioGroup, ElRadio, ElRadioButton } from 'element-plus'
@@ -42,42 +43,48 @@ const onSubmit = async () => {
   if (!form.value.savePath) return ElMessage.error('请选择保存位置')
 
   const sec_uid = form.value.homeURL.split('/').pop()
-  const max_cursor = '0'
+  if (!sec_uid) return ElMessage.error('请输入正确的用户主页地址')
 
-  if (sec_uid) {
-    isDownloading.value = true
+  isDownloading.value = true
 
-    const url = 'https://www.iesdouyin.com/web/api/v2/user/info'
-    const response = await http.fetch(url, { method: 'GET', query: { sec_uid } }).catch((error) => console.error(error))
-    if (response) {
-      const data = response.data as any
-      if (data.status_code === 0) {
-        let folderName = ''
-        switch (form.value.folderNameType) {
-          case FolderNameType.Nickname:
-            folderName = data.user_info.nickname
-            break
-          case FolderNameType.ID:
-            folderName = data.user_info.uid
-            break
-          case FolderNameType.DouyinID:
-            folderName = data.user_info.unique_id || data.user_info.short_id
-            break
-        }
-        const folderPath = await resolve(form.value.savePath, folderName)
-        await fs.createDir(folderPath)
+  const folderPath = await createFolder(sec_uid)
+  if (!folderPath) {
+    isDownloading.value = false
+    ElMessage.error('文件夹创建失败，请重试')
+    return
+  }
 
-        requsetList(sec_uid, max_cursor, folderPath)
-      }
-    } else {
-      isDownloading.value = false
-      ElMessage.error('获取作者信息失败')
-    }
-  } else ElMessage.error('请输入正确的用户主页地址')
+  requsetList(sec_uid, '0', folderPath)
 }
 
 const onCancelClick = () => {
   isDownloading.value = false
+}
+
+const createFolder = async (sec_uid: string) => {
+  const user = await getUser(sec_uid)
+  if (!user) return
+
+  const { uid, short_id, unique_id, nickname } = user
+
+  let folderName = ''
+  switch (form.value.folderNameType) {
+    case FolderNameType.Nickname:
+      folderName = nickname
+      break
+    case FolderNameType.ID:
+      folderName = uid
+      break
+    case FolderNameType.DouyinID:
+      folderName = unique_id || short_id
+      break
+  }
+
+  const folderPath = await resolve(form.value.savePath, folderName)
+  const isExist = await exists(folderPath)
+  !isExist && (await fs.createDir(folderPath))
+
+  return folderPath
 }
 
 const requsetList = (sec_uid: string, max_cursor: string, folderPath: string) => {

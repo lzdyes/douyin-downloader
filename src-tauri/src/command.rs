@@ -5,6 +5,13 @@ pub async fn show(window: tauri::Window) {
   window.get_window("main").unwrap().show().unwrap();
 }
 
+use std::path::Path;
+
+#[tauri::command]
+pub async fn exists(path: String) -> bool {
+  Path::new(&path).exists()
+}
+
 use futures_util::StreamExt;
 use reqwest::header::USER_AGENT;
 use std::fs::File;

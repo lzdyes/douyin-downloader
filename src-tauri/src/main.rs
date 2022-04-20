@@ -8,7 +8,11 @@ mod menu;
 
 fn main() {
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![command::show, command::download])
+    .invoke_handler(tauri::generate_handler![
+      command::show,
+      command::exists,
+      command::download
+    ])
     .menu(menu::generate_menu())
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
