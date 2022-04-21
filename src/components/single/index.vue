@@ -1,6 +1,7 @@
 <template lang="pug" src="./index.pug"></template>
 <style scoped lang="stylus" src="./index.styl"></style>
 <script setup lang="ts">
+import { getVideo } from '@/api'
 import { FileNameType } from '@/enums'
 import { generateVideoURL } from '@/utils'
 import { dialog, http, invoke } from '@tauri-apps/api'
@@ -8,13 +9,22 @@ import { basename } from '@tauri-apps/api/path'
 import { ElButton, ElForm, ElFormItem, ElInput, ElMessage, ElRadioGroup, ElRadio, ElRadioButton } from 'element-plus'
 import { ref } from 'vue'
 
+interface DownloadParams {
+  id: string
+  ratio: string
+  watermark: number
+  audio: boolean
+  nameType: FileNameType
+  savePath: string
+}
+
 const form = ref({
   url: '',
-  savePath: '',
   ratio: '1080p',
   watermark: 0,
-  nameType: FileNameType.TitleTag,
   audio: false,
+  nameType: FileNameType.TitleTag,
+  savePath: '',
 })
 
 const isDownloading = ref(false)
@@ -32,12 +42,12 @@ const onSubmit = async () => {
   if (!form.value.savePath) return ElMessage.error('请选择保存位置')
 
   const { searchParams } = new URL(form.value.url)
-  const item_ids = searchParams.get('modal_id')
+  const id = searchParams.get('modal_id')
 
-  if (item_ids) {
+  if (id) {
     isDownloading.value = true
     status.value = '下载中'
-    requestVideo(item_ids)
+    downloadVideo({ id, ...form.value })
   } else ElMessage.error('请输入正确的视频地址')
 }
 
@@ -45,49 +55,39 @@ const onCancelClick = () => {
   isDownloading.value = false
 }
 
-const requestVideo = (item_ids: string) => {
-  const url = 'https://www.douyin.com/web/api/v2/aweme/iteminfo'
+const downloadVideo = async (parms: DownloadParams) => {
+  const { id, ratio, watermark, audio, nameType, savePath } = parms
+  const data = await getVideo(id)
+  if (data) {
+    const { desc, video } = data
+    const { vid } = video
+    const isAudio = !vid
 
-  http
-    .fetch(url, { method: 'GET', query: { item_ids } })
-    .then(async (response) => {
-      console.log(response)
+    if (isAudio && !audio) return
 
-      const data = response.data as any
+    const url = isAudio ? video.play_addr.url_list[0] : generateVideoURL(vid, ratio, watermark)
 
-      if (data.status_code === 0) {
-        const { desc, video } = data.item_list[0]
-        const { vid } = video
-        const isAudio = !vid
+    let name = ''
+    switch (nameType) {
+      case FileNameType.TitleTag:
+        name = desc
+        break
+      case FileNameType.Title:
+        const index = desc.indexOf('#')
+        if (index === -1) name = desc.trim()
+        else name = desc.substring(0, index).trim()
+        break
+      case FileNameType.ID:
+        name = isAudio ? await basename(url, '.mp3') : vid
+        break
+    }
 
-        /** skip audio */
-        if (isAudio && !form.value.audio) return
-
-        const url = isAudio ? video.play_addr.url_list[0] : generateVideoURL(vid, form.value.ratio, form.value.watermark)
-
-        let name = ''
-        switch (form.value.nameType) {
-          case FileNameType.TitleTag:
-            name = desc
-            break
-          case FileNameType.Title:
-            const index = desc.indexOf('#')
-            if (index === -1) name = desc.trim()
-            else name = desc.substring(0, index).trim()
-            break
-          case FileNameType.ID:
-            name = isAudio ? await basename(url, '.mp3') : vid
-            break
-        }
-
-        const ext = isAudio ? '.mp3' : '.mp4'
-        const path = `${form.value.savePath}/${name}${ext}`
-        invoke('download', { url, path })
-          .then(() => (status.value = '下载成功'))
-          .catch(() => (status.value = '下载失败'))
-          .finally(() => (isDownloading.value = false))
-      }
-    })
-    .catch((error) => console.error(error))
+    const ext = isAudio ? '.mp3' : '.mp4'
+    const path = `${savePath}/${name}${ext}`
+    invoke('download', { url, path })
+      .then(() => (status.value = '下载成功'))
+      .catch(() => (status.value = '下载失败'))
+      .finally(() => (isDownloading.value = false))
+  } else ElMessage.error('获取视频信息失败')
 }
 </script>
