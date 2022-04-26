@@ -3,7 +3,7 @@
 <script setup lang="ts">
 import { getUser, getVideos } from '@/api'
 import { FileNameType, FolderNameType } from '@/enums'
-import { exists, generateVideoURL } from '@/utils'
+import { exists, formatSize, generateVideoURL } from '@/utils'
 import { dialog, fs, invoke } from '@tauri-apps/api'
 import { basename, resolve } from '@tauri-apps/api/path'
 import { ElButton, ElForm, ElFormItem, ElInput, ElProgress, ElDivider, ElMessage, ElRadioGroup, ElRadio, ElRadioButton } from 'element-plus'
@@ -20,7 +20,7 @@ const form = ref({
 })
 
 const isDownloading = ref(false)
-
+const diskFreeSize = ref('')
 const total = ref(0)
 const successCount = ref(0)
 const failureCount = ref(0)
@@ -29,6 +29,9 @@ const percent = computed(() => Math.floor(((successCount.value + failureCount.va
 const onSaveClick = async () => {
   const path = (await dialog.open({ directory: true })) as string
   path && (form.value.savePath = path)
+
+  const freeSize = (await invoke('disk_free_size', { path })) as number
+  diskFreeSize.value = formatSize(freeSize)
 }
 
 const onSubmit = async () => {

@@ -3,8 +3,8 @@
 <script setup lang="ts">
 import { getVideo } from '@/api'
 import { FileNameType } from '@/enums'
-import { generateVideoURL } from '@/utils'
-import { dialog, http, invoke } from '@tauri-apps/api'
+import { formatSize, generateVideoURL } from '@/utils'
+import { dialog, invoke } from '@tauri-apps/api'
 import { basename } from '@tauri-apps/api/path'
 import { ElButton, ElForm, ElFormItem, ElInput, ElMessage, ElRadioGroup, ElRadio, ElRadioButton } from 'element-plus'
 import { ref } from 'vue'
@@ -19,11 +19,15 @@ const form = ref({
 })
 
 const isDownloading = ref(false)
+const diskFreeSize = ref('')
 const status = ref('')
 
 const onSaveClick = async () => {
   const path = (await dialog.open({ directory: true })) as string
   path && (form.value.savePath = path)
+
+  const freeSize = (await invoke('disk_free_size', { path })) as number
+  diskFreeSize.value = formatSize(freeSize)
 }
 
 const onSubmit = async () => {

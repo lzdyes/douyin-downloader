@@ -22,7 +22,8 @@
         el-radio(:label='FileNameType.ID' border) 视频/音频 ID
         el-radio(:label='FileNameType.MD5' border) MD5
     el-form-item.row(label='保存位置')
-      el-input(v-model='form.savePath')
+      el-input(v-model='form.savePath' readonly)
+        template(v-if='diskFreeSize' #append) 磁盘可用空间：{{ diskFreeSize }}
       el-button(type='primary' @click='onSaveClick' :disabled='isDownloading') 浏 览
     el-form-item
       el-button(type='primary' @click='onSubmit' :loading='isDownloading') 下 载

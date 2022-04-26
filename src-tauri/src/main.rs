@@ -11,7 +11,8 @@ fn main() {
     .invoke_handler(tauri::generate_handler![
       command::show,
       command::exists,
-      command::download
+      command::download,
+      command::disk_free_size,
     ])
     .menu(menu::generate_menu())
     .run(tauri::generate_context!())

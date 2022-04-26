@@ -19,3 +19,11 @@ export const checkUpdate = async () => {
   }
   return false
 }
+
+export const formatSize = (size: number): string => {
+  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  const index = Math.floor(Math.log(size) / Math.log(1024))
+  const newSize = size / Math.pow(1024, index)
+  const strSize = index > 1 ? newSize.toFixed(2) : Math.floor(newSize)
+  return `${strSize} ${units[index]}`
+}
