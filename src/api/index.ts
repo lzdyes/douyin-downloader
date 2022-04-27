@@ -19,12 +19,14 @@ interface Video {
   }
 }
 
+export interface VideoItem {
+  desc: string
+  video: Video
+}
+
 interface VideoResponse {
   status_code: number
-  item_list: Array<{
-    desc: string
-    video: Video
-  }>
+  item_list: Array<VideoItem>
 }
 
 interface VideosResponse {
@@ -32,10 +34,7 @@ interface VideosResponse {
   min_cursor: number
   max_cursor: number
   has_more: boolean
-  aweme_list: Array<{
-    desc: string
-    video: Video
-  }>
+  aweme_list: Array<VideoItem>
 }
 
 export const getUser = async (sec_uid: string) => {

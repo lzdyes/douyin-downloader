@@ -2,6 +2,7 @@
 <style scoped lang="stylus" src="./index.styl"></style>
 <script setup lang="ts">
 import { getUser, getVideos } from '@/api'
+import type { VideoItem } from '@/api'
 import { FileNameType, FolderNameType } from '@/enums'
 import { exists, formatSize, generateVideoURL } from '@/utils'
 import { dialog, fs, invoke } from '@tauri-apps/api'
@@ -56,7 +57,7 @@ const onSubmit = async () => {
     return
   }
 
-  const videos = await getAllVideo(sec_uid)
+  const videos = await getAllVideo(sec_uid, audio)
   total.value = videos.length
 
   console.log(videos)
@@ -64,8 +65,6 @@ const onSubmit = async () => {
   videos.forEach(async ({ desc, video }, i) => {
     const { vid, play_addr } = video
     const isAudio = !vid
-
-    if (isAudio && !audio) return
 
     const url = isAudio ? play_addr.url_list[0] : generateVideoURL(vid, ratio, watermark)
     const ext = isAudio ? '.mp3' : '.mp4'
@@ -84,13 +83,16 @@ const onSubmit = async () => {
         name = isAudio ? await basename(url, '.mp3') : vid
         break
       case FileNameType.Index:
-        name = i.toString()
+        name = (i + 1).toString()
         break
     }
 
     invoke('download', { url, folder: folderPath, nameType: fileNameType, name, ext })
       .then(() => successCount.value++)
-      .catch(() => failureCount.value++)
+      .catch((error) => {
+        failureCount.value++
+        console.error(url, error)
+      })
       .finally(() => percent.value === 100 && (isDownloading.value = false))
   })
 }
@@ -125,15 +127,15 @@ const createFolder = async (sec_uid: string, folderNameType: FolderNameType, sav
   return folderPath
 }
 
-const getAllVideo = async (sec_uid: string) => {
-  const videos = []
+const getAllVideo = async (sec_uid: string, audio: boolean) => {
+  const videos: Array<VideoItem> = []
 
   let data = await getVideos(sec_uid)
-  data && videos.push(...data.aweme_list)
+  data?.aweme_list.forEach((v) => !(!audio && !v.video.vid) && videos.push(v))
 
   while (data && data.has_more) {
     data = await getVideos(sec_uid, data.max_cursor.toString())
-    data && videos.push(...data.aweme_list)
+    data?.aweme_list.forEach((v) => !(!audio && !v.video.vid) && videos.push(v))
   }
 
   return videos
