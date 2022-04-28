@@ -6,15 +6,6 @@ router-view(v-slot='{ Component }')
 Updater
 </template>
 
-<style lang="stylus">
-html, body
-  height 100%
-
-#app
-  height 100%
-  display flex
-</style>
-
 <script setup lang="ts">
 import { invoke } from '@tauri-apps/api/tauri'
 import { onMounted } from 'vue'
