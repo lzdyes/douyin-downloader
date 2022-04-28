@@ -1,7 +1,12 @@
 .about
   img(src='@/assets/img/logo.png')
-  .name 抖音下载器
-  .version 版本 v{{ version }}
-  img.github(src='@/assets/img/github.svg' @click='onGithubClick')
+  .name {{ t('app') }}
+  .version {{ t('version') }}: v{{ version }}
   .btn-check
-    el-button(:loading='isCheckLoading' @click='onCheckUpdateClick' round) 检查更新
+    el-button(:loading='isCheckLoading' @click='onCheckUpdateClick' round) {{ t('about.check_update') }}
+  img.github(src='@/assets/img/github.svg' @click='onGithubClick')
+
+  .language 
+    span {{ t('about.change_language') }}
+    el-select(v-model='locale')
+      el-option(v-for='item in languages' :label='item.label' :value='item.value')

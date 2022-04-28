@@ -1,0 +1,11 @@
+app: 抖音下载器
+version: 版本
+
+menu:
+  all_video: 全部视频
+  single_video: 单个视频
+  about: 关于
+
+about:
+  check_update: 检查更新
+  change_language: 切换语言

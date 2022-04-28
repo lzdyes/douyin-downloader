@@ -1,9 +1,9 @@
 .menu
   .top
-    .item(v-for='item of menus.top' :class='{ active: isActive(item.path) }' @mousedown='onMenuSwitch(item.path)')
+    .item(v-for='item in menus.top' :class='{ active: isActive(item.path) }' @mousedown='onMenuSwitch(item.path)')
       img(:src='item.icon[isActive(item.path) ? 1 : 0]')
-      .name {{ item.name }}
+      .name {{ t(item.key) }}
   .bottom
-    .item(v-for='item of menus.bottom' :class='{ active: isActive(item.path) }' @mousedown='onMenuSwitch(item.path)')
+    .item(v-for='item in menus.bottom' :class='{ active: isActive(item.path) }' @mousedown='onMenuSwitch(item.path)')
       img(:src='item.icon[isActive(item.path) ? 1 : 0]')
-      .name {{ item.name }}
+      .name {{ t(item.key) }}

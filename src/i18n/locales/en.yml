@@ -1,0 +1,11 @@
+app: Douyin Downloader
+version: Version
+
+menu:
+  all_video: All Video
+  single_video: Single Video
+  about: About
+
+about:
+  check_update: Check Update
+  change_language: Change Language
