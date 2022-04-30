@@ -6,6 +6,60 @@ menu:
   single_video: 单个视频
   about: 关于
 
+video:
+  home_url: 主页地址
+  video_url: 视频地址
+  example_home: 例如：https://www.douyin.com/user/MS4wLjABAAAAzzmS2TgIEvxGftMpWD13Ty8k5HmsjlGsLJ1yBUEm2Ew
+  example_video: 例如：https://www.douyin.com/discover?modal_id=7011492554306817292
+  ratio: 视频质量
+  ratio_540:  高清 (540P)
+  ratio_720: 超清 (720P)
+  ratio_1080: 蓝光 (1080P)
+  watermark: 视频水印
+  watermark_0: 去除水印
+  watermark_1: 保留水印
+  audio: 音频文件
+  audio_0: 跳过
+  audio_1: 下载
+  folder_name: 文件夹命名
+  author_nickname: 作者昵称
+  author_id: 作者 ID
+  douyin_id: 抖音号
+  file_name: 文件命名
+  title_tag: 标题 + 标签
+  title: 标题
+  video_id: 视频/音频 ID
+  index: 序号
+  save_path: 保存位置
+  disk_space: 磁盘可用空间：
+  total: 总数：
+  success: 成功：
+  failure: 失败：
+  status: 状态：
+  downloading: 下载中
+  download_success: 下载成功
+  download_failure: 下载失败
+
+button:
+  select: 浏 览
+  download: 下 载
+  cancel: 取 消
+  update: 更 新
+
+message:
+  empty_home_url: 请输入用户主页地址
+  error_home_url: 请输入正确的用户主页地址
+  empty_sava_path: 请选择保存位置
+  error_create_folder: 文件夹创建失败，请重试
+  empty_video_url: 请输入视频地址
+  error_video_url: 请输入正确的视频地址
+  error_video_info: 获取视频信息失败
+  latest_version: 已是最新版本
+
+updater:
+  tip: 提示
+  message: 发现新版本 v{version}，是否立即更新？
+
 about:
   check_update: 检查更新
   change_language: 切换语言

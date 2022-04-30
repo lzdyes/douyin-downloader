@@ -5,7 +5,7 @@ import en from './locales/en.yml'
 
 const i18n = createI18n({
   legacy: false,
-  locale: 'cn',
+  locale: localStorage.getItem('language') || 'cn',
   fallbackLocale: 'cn',
   messages: { cn, en },
 })

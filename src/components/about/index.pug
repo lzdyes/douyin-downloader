@@ -6,7 +6,7 @@
     el-button(:loading='isCheckLoading' @click='onCheckUpdateClick' round) {{ t('about.check_update') }}
   img.github(src='@/assets/img/github.svg' @click='onGithubClick')
 
-  .language 
+  .language
     span {{ t('about.change_language') }}
-    el-select(v-model='locale')
+    el-select(v-model='locale' @change='onLanguageChange')
       el-option(v-for='item in languages' :label='item.label' :value='item.value')

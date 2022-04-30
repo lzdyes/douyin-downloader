@@ -9,6 +9,9 @@ import { dialog, fs, invoke } from '@tauri-apps/api'
 import { basename, resolve } from '@tauri-apps/api/path'
 import { ElButton, ElForm, ElFormItem, ElInput, ElProgress, ElDivider, ElMessage, ElRadioGroup, ElRadio, ElRadioButton } from 'element-plus'
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const form = ref({
   homeURL: '',
@@ -42,18 +45,18 @@ const onSubmit = async () => {
 
   const { homeURL, ratio, watermark, audio, folderNameType, fileNameType, savePath } = form.value
 
-  if (!homeURL) return ElMessage.error('请输入用户主页地址')
-  if (!savePath) return ElMessage.error('请选择保存位置')
+  if (!homeURL) return ElMessage.error(t('message.empty_home_url'))
+  if (!savePath) return ElMessage.error(t('message.empty_sava_path'))
 
   const sec_uid = homeURL.split('/').pop()
-  if (!sec_uid) return ElMessage.error('请输入正确的用户主页地址')
+  if (!sec_uid) return ElMessage.error(t('message.error_home_url'))
 
   isDownloading.value = true
 
   const folderPath = await createFolder(sec_uid, folderNameType, savePath)
   if (!folderPath) {
     isDownloading.value = false
-    ElMessage.error('文件夹创建失败，请重试')
+    ElMessage.error(t('message.error_create_folder'))
     return
   }
 

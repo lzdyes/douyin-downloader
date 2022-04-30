@@ -7,6 +7,7 @@
   "[stylus]": { "editor.formatOnSave": true, "editor.defaultFormatter": "thisismanta.stylus-supremacy" },
   "[jade]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[html]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[yaml]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[vue]": { "editor.formatOnSave": true, "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[rust]": { "editor.formatOnSave": true, "editor.defaultFormatter": "rust-lang.rust" },
 

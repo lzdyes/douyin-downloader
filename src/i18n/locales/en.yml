@@ -6,6 +6,60 @@ menu:
   single_video: Single Video
   about: About
 
+video:
+  home_url: Home URL
+  video_url: Video URL
+  example_home: 'e.g: https://www.douyin.com/user/MS4wLjABAAAAzzmS2TgIEvxGftMpWD13Ty8k5HmsjlGsLJ1yBUEm2Ew'
+  example_video: 'e.g: https://www.douyin.com/discover?modal_id=7011492554306817292'
+  ratio: Video Ratio
+  ratio_540: HD (540P)
+  ratio_720: Full HD (720P)
+  ratio_1080: Ultra HD (1080P)
+  watermark: Watermark
+  watermark_0: In Paint
+  watermark_1: Watermark
+  audio: Audio
+  audio_0: Skip
+  audio_1: Download
+  folder_name: Folder Name
+  author_nickname: Author Nickname
+  author_id: Author ID
+  douyin_id: Douyin ID
+  file_name: File Name
+  title_tag: Title + Tag
+  title: Title
+  video_id: Media ID
+  index: Index
+  save_path: Save Path
+  disk_space: 'Available disk space: '
+  total: 'Total: '
+  success: 'Success: '
+  failure: 'Failure: '
+  status: 'Status: '
+  downloading: Downloading
+  download_success: Download Success
+  download_failure: Download Failure
+
+button:
+  select: Select
+  download: Download
+  cancel: Cancel
+  update: Update
+
+message:
+  empty_home_url: Please enter the user home page address.
+  error_home_url: Please enter the correct user home page address.
+  empty_sava_path: Please select a path to save the video.
+  error_create_folder: Folder creation failed. Please try again.
+  empty_video_url: Please enter the video address.
+  error_video_url: Please enter the correct video address.
+  error_video_info: Failed to get video info.
+  latest_version: This is the latest version.
+
+updater:
+  tip: Tips
+  message: New version v{version} was found. Do you want to update it now?
+
 about:
   check_update: Check Update
   change_language: Change Language

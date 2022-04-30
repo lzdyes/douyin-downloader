@@ -24,7 +24,9 @@ const onGithubClick = () => shell.open('https://github.com/lzdyes/douyin-downloa
 const onCheckUpdateClick = async () => {
   isCheckLoading.value = true
   const shouldUpdate = await checkUpdate()
-  !shouldUpdate && ElMessage.success('已是最新版本')
+  !shouldUpdate && ElMessage.success(t('message.latest_version'))
   isCheckLoading.value = false
 }
+
+const onLanguageChange = (language: string) => localStorage.setItem('language', language)
 </script>

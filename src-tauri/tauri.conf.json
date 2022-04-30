@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "douyin-downloader",
-    "version": "0.1.7"
+    "version": "0.1.8"
   },
   "build": {
     "distDir": "../dist",
@@ -71,7 +71,7 @@
     "windows": [
       {
         "title": "抖音下载器",
-        "width": 850,
+        "width": 860,
         "height": 450,
         "center": true,
         "visible": false,

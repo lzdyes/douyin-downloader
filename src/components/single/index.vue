@@ -8,6 +8,9 @@ import { dialog, invoke } from '@tauri-apps/api'
 import { basename } from '@tauri-apps/api/path'
 import { ElButton, ElForm, ElFormItem, ElInput, ElMessage, ElRadioGroup, ElRadio, ElRadioButton } from 'element-plus'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const form = ref({
   videoURL: '',
@@ -35,18 +38,18 @@ const onSubmit = async () => {
 
   const { videoURL, ratio, watermark, audio, fileNameType, savePath } = form.value
 
-  if (!videoURL) return ElMessage.error('请输入视频地址')
-  if (!savePath) return ElMessage.error('请选择保存位置')
+  if (!videoURL) return ElMessage.error(t('message.empty_video_url'))
+  if (!savePath) return ElMessage.error(t('message.empty_sava_path'))
 
   const { searchParams } = new URL(videoURL)
   const id = searchParams.get('modal_id')
-  if (!id) return ElMessage.error('请输入正确的视频地址')
+  if (!id) return ElMessage.error(t('message.error_video_url'))
 
   isDownloading.value = true
-  status.value = '下载中'
+  status.value = t('video.downloading')
 
   const data = await getVideo(id)
-  if (!data) return ElMessage.error('获取视频信息失败')
+  if (!data) return ElMessage.error(t('message.error_video_info'))
 
   const { desc, video } = data
   const { vid } = video
@@ -73,8 +76,8 @@ const onSubmit = async () => {
   }
 
   invoke('download', { url, folder: savePath, nameType: fileNameType, name, ext })
-    .then(() => (status.value = '下载成功'))
-    .catch(() => (status.value = '下载失败'))
+    .then(() => (status.value = t('video.download_success')))
+    .catch(() => (status.value = t('video.download_failure')))
     .finally(() => (isDownloading.value = false))
 }
 
