@@ -49,7 +49,11 @@ const onSubmit = async () => {
   status.value = t('video.downloading')
 
   const data = await getVideo(id)
-  if (!data) return ElMessage.error(t('message.error_video_info'))
+  if (!data) {
+    isDownloading.value = false
+    status.value = ''
+    return ElMessage.error(t('message.error_video_info'))
+  }
 
   const { desc, video } = data
   const { vid } = video
